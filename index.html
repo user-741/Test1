@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Development Quiz</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="quiz-container">
+  <div id="progress-bar"></div>
+  <div id="question-container">
+    <div id="question-text"></div>
+    <div id="options-container">
+      <button class="option-btn" onclick="checkAnswer(true)">True</button>
+      <button class="option-btn" onclick="checkAnswer(false)">False</button>
+    </div>
+    <input type="text" id="custom-answer" placeholder="Enter your answer">
+    <button class="option-btn" onclick="checkCustomAnswer()">Submit</button>
+  </div>
+  <div id="results-container" style="display: none;">
+    <h2>Results</h2>
+    <p id="correct-count"></p>
+    <p id="incorrect-count"></p>
+    <button class="option-btn" onclick="restartQuiz()">Restart</button>
+  </div>
+  <div id="mode-container">
+    <label for="guided-mode">Guided Mode</label>
+    <input type="radio" id="guided-mode" name="mode" checked onclick="setGuidedMode(true)">
+    <label for="not-guided-mode">Not Guided Mode</label>
+    <input type="radio" id="not-guided-mode" name="mode" onclick="setGuidedMode(false)">
+  </div>
+</div>
+
+<script>
+const questions = [
+  { question: "Hypertext is dynamic.", answer: true },
+  { question: "Status bar in any browser always appears at the bottom of the window.", answer: true },
+  { question: "Scroll bars in the display area of the browser are automatically created.", answer: true },
+  { question: "The __ toolbar contains buttons for internet browsing-", answer: "Navigation bar" },
+  { question: "The three aspects of a web browser are, its URL, XHTML, and display.", answer: false },
+  { question: "Managing web pages involves saving URLs and web pages, creating bookmarks, and printing.", answer: true },
+  { question: "A browser cache speeds up the retrieval and display of a re-visited web page.", answer: true },
+  { question: "The browser disk cache can be set to zero.", answer: false },
+  { question: "A browser can determine and inform the user if a plug-in application is needed for a web page.", answer: true },
+  { question: "Customization of a browser includes specifying a default web page.", answer: true },
+  { question: "The encryption/decryption can start at either the server or the client.", answer: true },
+  { question: "Wireless browsing is different from conventional desktop browsing.", answer: true },
+  { question: "Browsers used for desktop browsing can also be used for wireless browsing.", answer: false },
+  { question: "A server is a computer program.", answer: true },
+  { question: "____ is a computer program that helps you find specific information on the web.", answer: "Search Engine" },
+  { question: "A database is a set of data that is organized and stored in one or more files.", answer: true },
+  { question: "Multiple clients can access a server simultaneously.", answer: true },
+  { question: "Internet communication is based on client/server model.", answer: true },
+  { question: "edu and com are examples of TLD (top-level domain).", answer: true },
+  { question: "____ is the default web protocol.", answer: "http" },
+  { question: "Each of the four numbers of an IP address has a value between:", answer: "0 & 255" },
+  { question: "URL contains the protocol required to access the file or the webpage.", answer: true },
+  { question: "File Compression and Decompression programs must be compatible.", answer: true }
+];
+
+let currentQuestionIndex = 0;
+let correctCount = 0;
+let incorrectCount = 0;
+let guidedMode = true;
+
+const progressBar = document.getElementById('progress-bar');
+const questionText = document.getElementById('question-text');
+const customAnswerInput = document.getElementById('custom-answer');
+const resultsContainer = document.getElementById('results-container');
+const correctCountDisplay = document.getElementById('correct-count');
+const incorrectCountDisplay = document.getElementById('incorrect-count');
+
+function showQuestion() {
+  const currentQuestion = questions[currentQuestionIndex];
+  questionText.textContent = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+  customAnswerInput.value = "";
+  customAnswerInput.style.display = currentQuestion.answer === true || currentQuestion.answer === false ? "none" : "block";
+}
+
+function checkAnswer(userAnswer) {
+  const currentQuestion = questions[currentQuestionIndex];
+  if (userAnswer === currentQuestion.answer) {
+    correctCount++;
+  } else {
+    incorrectCount++;
+    if (guidedMode) {
+      alert("Incorrect answer. Try again!");
+      return;
+    }
+  }
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questions.length) {
+    progressBar.style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function checkCustomAnswer() {
+  const currentQuestion = questions[currentQuestionIndex];
+  const userAnswer = customAnswerInput.value.trim();
+  if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+    correctCount++;
+  } else {
+    incorrectCount++;
+    if (guidedMode) {
+      alert("Incorrect answer. Try again!");
+      return;
+    }
+  }
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questions.length) {
+    progressBar.style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  resultsContainer.style.display = "block";
+  correctCountDisplay.textContent = `Correct Answers: ${correctCount}`;
+  incorrectCountDisplay.textContent = `Incorrect Answers: ${incorrectCount}`;
+}
+
+function restartQuiz() {
+  currentQuestionIndex = 0;
+  correctCount = 0;
+  incorrectCount = 0;
+  progressBar.style.width = "0%";
+  resultsContainer.style.display = "none";
+  showQuestion();
+}
+
+function setGuidedMode(mode) {
+  guidedMode = mode;
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>
