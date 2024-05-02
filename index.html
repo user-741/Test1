@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Web Development Quiz</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -23,6 +23,7 @@
     <h2>Results</h2>
     <p id="correct-count"></p>
     <p id="incorrect-count"></p>
+    <div id="incorrect-answers"></div>
     <button class="option-btn" onclick="restartQuiz()">Restart</button>
   </div>
   <div id="mode-container">
@@ -64,6 +65,7 @@ let currentQuestionIndex = 0;
 let correctCount = 0;
 let incorrectCount = 0;
 let guidedMode = true;
+const incorrectAnswersContainer = document.getElementById('incorrect-answers');
 
 const progressBar = document.getElementById('progress-bar');
 const questionText = document.getElementById('question-text');
@@ -88,6 +90,8 @@ function checkAnswer(userAnswer) {
     if (guidedMode) {
       alert("Incorrect answer. Try again!");
       return;
+    } else {
+      recordIncorrectAnswer(currentQuestion);
     }
   }
   currentQuestionIndex++;
@@ -109,6 +113,8 @@ function checkCustomAnswer() {
     if (guidedMode) {
       alert("Incorrect answer. Try again!");
       return;
+    } else {
+      recordIncorrectAnswer(currentQuestion);
     }
   }
   currentQuestionIndex++;
@@ -118,6 +124,12 @@ function checkCustomAnswer() {
   } else {
     showResults();
   }
+}
+
+function recordIncorrectAnswer(question) {
+  const incorrectAnswerElement = document.createElement('p');
+  incorrectAnswerElement.textContent = `Question: ${question.question} | Correct Answer: ${question.answer}`;
+  incorrectAnswersContainer.appendChild(incorrectAnswerElement);
 }
 
 function showResults() {
@@ -132,6 +144,7 @@ function restartQuiz() {
   incorrectCount = 0;
   progressBar.style.width = "0%";
   resultsContainer.style.display = "none";
+  incorrectAnswersContainer.innerHTML = "";
   showQuestion();
 }
 
